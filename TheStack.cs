@@ -25,6 +25,8 @@ public class TheStack : MonoBehaviour
     public Color prevColor;
     public Color nextColor;
     
+    bool isMovingX = true;
+    
     void Start()
     {
         if(originBlock == null)
@@ -47,6 +49,7 @@ public class TheStack : MonoBehaviour
             Spawn_Block();
         }
         
+        MoveBlock();
         transform.position = Vector3.Lerp(transform.position, desiredPosition, StackMovingSpeed * Time.deltaTime);
     }
     
@@ -82,6 +85,7 @@ public class TheStack : MonoBehaviour
 
         lastBlock = newTrans;
 
+        isMovingX = !isMovingX;
         return true;
     }
     
@@ -113,6 +117,22 @@ public class TheStack : MonoBehaviour
         {
             prevColor = nextColor;
             nextColor = GetRandomColor();
+        }
+    }
+    
+    void MoveBlock()
+    {
+        blockTransition += Time.deltaTime * BlockMovingSpeed;
+    
+        float movePosition = Mathf.PingPong(blockTransition, BoundSize) - BoundSize / 2;
+
+        if (isMovingX)
+        {
+            lastBlock.localPosition = new Vector3(movePosition * MovingBoundsSize, stackCount, secondaryPosition);
+        }
+        else
+        {
+            lastBlock.localPosition = new Vector3(secondaryPosition, stackCount, -movePosition * MovingBoundsSize);
         }
     }
 }
